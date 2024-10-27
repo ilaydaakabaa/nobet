@@ -1,0 +1,30 @@
+﻿
+
+
+<ul class="navbar-nav ml-auto">
+    @if (Context.User.Identity.IsAuthenticated)
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-dark" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-user"></i> Hello, @Context.User.Identity.Name!
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                <form asp-controller="User" asp-action="Login" method="post" id="logoutForm" class="dropdown-item">
+                    <button type="submit" class="btn btn-danger w-100">Log off</button>
+                </form>
+            </div>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-dark" href="#" id="authDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-user"></i> Account
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="authDropdown">
+             
+                <a class="dropdown-item" asp-controller="User" asp-action="Login">Giriş Yap</a>
+            </div>
+        </li>
+    }
+</ul>
