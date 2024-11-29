@@ -72,9 +72,16 @@ namespace nobet.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("AssistantId");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Assistants");
                 });
@@ -106,6 +113,38 @@ namespace nobet.Migrations
                     b.ToTable("Departments");
                 });
 
+            modelBuilder.Entity("emergencyProject.Models.EmergencyNews", b =>
+                {
+                    b.Property<int>("EmergencyNewsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmergencyNewsId"));
+
+                    b.Property<int?>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSent")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("NewsDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EmergencyNewsId");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("EmergencyNews");
+                });
+
             modelBuilder.Entity("emergencyProject.Models.Professor", b =>
                 {
                     b.Property<int>("ProfessorId")
@@ -113,9 +152,6 @@ namespace nobet.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfessorId"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
@@ -130,9 +166,16 @@ namespace nobet.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("ProfessorId");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Professors");
                 });
@@ -180,9 +223,6 @@ namespace nobet.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("AssistantId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -194,17 +234,10 @@ namespace nobet.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProfessorId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
                     b.HasKey("UserId");
-
-                    b.HasIndex("AssistantId");
-
-                    b.HasIndex("ProfessorId");
 
                     b.ToTable("Users");
                 });
@@ -214,13 +247,13 @@ namespace nobet.Migrations
                     b.HasOne("emergencyProject.Models.Assistant", "Assistant")
                         .WithMany("Appointments")
                         .HasForeignKey("AssistantId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("emergencyProject.Models.Professor", "Professor")
                         .WithMany("Appointments")
                         .HasForeignKey("ProfessorId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Assistant");
@@ -233,6 +266,22 @@ namespace nobet.Migrations
                     b.HasOne("emergencyProject.Models.Department", null)
                         .WithMany("Assistants")
                         .HasForeignKey("DepartmentId");
+
+                    b.HasOne("emergencyProject.Models.User", "User")
+                        .WithOne("Assistant")
+                        .HasForeignKey("emergencyProject.Models.Assistant", "UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("emergencyProject.Models.EmergencyNews", b =>
+                {
+                    b.HasOne("emergencyProject.Models.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
+
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("emergencyProject.Models.Professor", b =>
@@ -240,10 +289,17 @@ namespace nobet.Migrations
                     b.HasOne("emergencyProject.Models.Department", "Department")
                         .WithMany("Professors")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("emergencyProject.Models.User", "User")
+                        .WithOne("Professor")
+                        .HasForeignKey("emergencyProject.Models.Professor", "UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.Navigation("Department");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("emergencyProject.Models.Shift", b =>
@@ -251,13 +307,13 @@ namespace nobet.Migrations
                     b.HasOne("emergencyProject.Models.Assistant", "Assistant")
                         .WithMany("Shifts")
                         .HasForeignKey("AssistantId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("emergencyProject.Models.Department", "Department")
                         .WithMany("Shifts")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Assistant");
@@ -265,30 +321,11 @@ namespace nobet.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("emergencyProject.Models.User", b =>
-                {
-                    b.HasOne("emergencyProject.Models.Assistant", "Assistant")
-                        .WithMany("Users")
-                        .HasForeignKey("AssistantId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("emergencyProject.Models.Professor", "Professor")
-                        .WithMany("Users")
-                        .HasForeignKey("ProfessorId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Assistant");
-
-                    b.Navigation("Professor");
-                });
-
             modelBuilder.Entity("emergencyProject.Models.Assistant", b =>
                 {
                     b.Navigation("Appointments");
 
                     b.Navigation("Shifts");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("emergencyProject.Models.Department", b =>
@@ -303,8 +340,13 @@ namespace nobet.Migrations
             modelBuilder.Entity("emergencyProject.Models.Professor", b =>
                 {
                     b.Navigation("Appointments");
+                });
 
-                    b.Navigation("Users");
+            modelBuilder.Entity("emergencyProject.Models.User", b =>
+                {
+                    b.Navigation("Assistant");
+
+                    b.Navigation("Professor");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,26 +6,27 @@ namespace emergencyProject.Models
     public class Professor
     {
         [Key]
-        public int ProfessorId { get; set; } // Birincil Anahtar (PK)
+        public int ProfessorId { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string FirstName { get; set; } // İsim
+        public string FirstName { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string LastName { get; set; } // Soyisim
-
-      
+        public string LastName { get; set; }
 
         [Required]
-        public int DepartmentId { get; set; } // Departman ile ilişki
+        public int DepartmentId { get; set; }
+
         [ForeignKey("DepartmentId")]
-        public virtual Department Department { get; set; } = null!; // Departman nesnesi (null referans hatası için!)
+        public virtual Department Department { get; set; } = null!;
 
-        public string? Address { get; set; } // Adres, isteğe bağlı
-        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>(); // Randevular
+        public int? UserId { get; set; }
 
-        public virtual ICollection<User> Users { get; set; } = new List<User>(); // İlişkili kullanıcılar
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; } = null!;
+
+        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

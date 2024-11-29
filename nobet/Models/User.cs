@@ -9,28 +9,24 @@ namespace emergencyProject.Models
     {
 
         [Key]
-        public int UserId { get; set; } // PK
+        public int UserId { get; set; }
 
         [Required(ErrorMessage = "Şifre gereklidir.")]
         [RegularExpression(@"^\S*$", ErrorMessage = "Şifre boşluk içeremez.")]
-        public string Password { get; set; } = null!; // Null referans hatası için
+        public string Password { get; set; } = null!;
 
         [Required(ErrorMessage = "Email adresi gereklidir.")]
         [EmailAddress(ErrorMessage = "Geçerli bir email giriniz.")]
-        public string Email { get; set; } = null!; // Null referans hatası için
+        public string Email { get; set; } = null!;
 
-        // Rol özelliği
         [Required]
-        public UserRole Role { get; set; }
+        public UserRole Role { get; set; } // Kullanıcı Rolü (Assistant veya Professor)
 
-        public string? PhoneNumber { get; set; } // İsteğe bağlı
-        public string? Address { get; set; } // İsteğe bağlı
+        public string? PhoneNumber { get; set; }
+        public string? Address { get; set; }
 
-        public int? AssistantId { get; set; } // Asistan ile ilişkili (isteğe bağlı)
-        public virtual Assistant? Assistant { get; set; } // İlişkili asistan (isteğe bağlı)
-
-        public int? ProfessorId { get; set; } // Profesör ile ilişkili (isteğe bağlı)
-        public virtual Professor? Professor { get; set; } // İlişkili profesör (isteğe bağlı)
+        public virtual Assistant? Assistant { get; set; } // Role bağlı Assistant ilişkisi
+        public virtual Professor? Professor { get; set; } // Role bağlı Professor ilişkisi
 
     }
 }

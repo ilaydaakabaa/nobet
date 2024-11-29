@@ -1,0 +1,48 @@
+﻿@model emergencyProject.Models.Shift
+@{
+    ViewData["Title"] = "AddShift";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>AddShift</h1>
+
+<form asp-action="AddShift" method="post">
+    <div class="form-group">
+        <label for="AssistantId">Asistan</label>
+        <select class="form-control" id="AssistantId" name="AssistantId" required>
+            <option value="">Seçiniz...</option>
+            @foreach (var assistant in ViewBag.Assistants)
+            {
+                <option value="@assistant.AssistantId">@assistant.FirstName @assistant.LastName</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="DepartmentId">Departman</label>
+        <select class="form-control" id="DepartmentId" name="DepartmentId" required>
+            <option value="">Seçiniz...</option>
+            @foreach (var department in ViewBag.Departments)
+            {
+                <option value="@department.DepartmentId">@department.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="ShiftDate">Nöbet Tarihi</label>
+        <input type="date" class="form-control" id="ShiftDate" name="ShiftDate" required />
+    </div>
+
+    <div class="form-group">
+        <label for="StartTime">Başlangıç Saati</label>
+        <input type="time" class="form-control" id="StartTime" name="StartTime" required />
+    </div>
+
+    <div class="form-group">
+        <label for="EndTime">Bitiş Saati</label>
+        <input type="time" class="form-control" id="EndTime" name="EndTime" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Ekle</button>
+</form>

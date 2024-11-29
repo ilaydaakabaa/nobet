@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace nobet.Migrations
 {
     /// <inheritdoc />
-    public partial class oldu : Migration
+    public partial class sjfnfj : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,6 +28,23 @@ namespace nobet.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Assistants",
                 columns: table => new
                 {
@@ -35,6 +52,7 @@ namespace nobet.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -45,6 +63,33 @@ namespace nobet.Migrations
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "DepartmentId");
+                    table.ForeignKey(
+                        name: "FK_Assistants_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmergencyNews",
+                columns: table => new
+                {
+                    EmergencyNewsId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NewsDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSent = table.Column<bool>(type: "bit", nullable: false),
+                    AuthorId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmergencyNews", x => x.EmergencyNewsId);
+                    table.ForeignKey(
+                        name: "FK_EmergencyNews_Users_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -56,7 +101,7 @@ namespace nobet.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -65,8 +110,12 @@ namespace nobet.Migrations
                         name: "FK_Professors_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
-                        principalColumn: "DepartmentId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "DepartmentId");
+                    table.ForeignKey(
+                        name: "FK_Professors_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -88,14 +137,12 @@ namespace nobet.Migrations
                         name: "FK_Shifts_Assistants_AssistantId",
                         column: x => x.AssistantId,
                         principalTable: "Assistants",
-                        principalColumn: "AssistantId",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "AssistantId");
                     table.ForeignKey(
                         name: "FK_Shifts_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
-                        principalColumn: "DepartmentId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "DepartmentId");
                 });
 
             migrationBuilder.CreateTable(
@@ -116,45 +163,12 @@ namespace nobet.Migrations
                         name: "FK_Appointments_Assistants_AssistantId",
                         column: x => x.AssistantId,
                         principalTable: "Assistants",
-                        principalColumn: "AssistantId",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "AssistantId");
                     table.ForeignKey(
                         name: "FK_Appointments_Professors_ProfessorId",
                         column: x => x.ProfessorId,
                         principalTable: "Professors",
-                        principalColumn: "ProfessorId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AssistantId = table.Column<int>(type: "int", nullable: true),
-                    ProfessorId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
-                    table.ForeignKey(
-                        name: "FK_Users_Assistants_AssistantId",
-                        column: x => x.AssistantId,
-                        principalTable: "Assistants",
-                        principalColumn: "AssistantId",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Users_Professors_ProfessorId",
-                        column: x => x.ProfessorId,
-                        principalTable: "Professors",
-                        principalColumn: "ProfessorId",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "ProfessorId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -173,9 +187,28 @@ namespace nobet.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Assistants_UserId",
+                table: "Assistants",
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmergencyNews_AuthorId",
+                table: "EmergencyNews",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Professors_DepartmentId",
                 table: "Professors",
                 column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Professors_UserId",
+                table: "Professors",
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Shifts_AssistantId",
@@ -186,16 +219,6 @@ namespace nobet.Migrations
                 name: "IX_Shifts_DepartmentId",
                 table: "Shifts",
                 column: "DepartmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_AssistantId",
-                table: "Users",
-                column: "AssistantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_ProfessorId",
-                table: "Users",
-                column: "ProfessorId");
         }
 
         /// <inheritdoc />
@@ -205,19 +228,22 @@ namespace nobet.Migrations
                 name: "Appointments");
 
             migrationBuilder.DropTable(
+                name: "EmergencyNews");
+
+            migrationBuilder.DropTable(
                 name: "Shifts");
-
-            migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Assistants");
 
             migrationBuilder.DropTable(
                 name: "Professors");
 
             migrationBuilder.DropTable(
+                name: "Assistants");
+
+            migrationBuilder.DropTable(
                 name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

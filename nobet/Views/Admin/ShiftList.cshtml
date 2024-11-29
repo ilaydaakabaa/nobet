@@ -1,0 +1,32 @@
+﻿@model IEnumerable<emergencyProject.Models.Shift>
+@{
+   
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<h2>Shift List</h2>
+<div class="mb-3">
+    <a href="@Url.Action("AddShift", "Admin")" class="btn btn-primary">Shift Ekle</a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Asistan</th>
+            <th>Departman</th>
+            <th>Tarih</th>
+            <th>Başlangıç</th>
+            <th>Bitiş</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var shift in Model)
+        {
+            <tr>
+                <td>@shift.Assistant.FirstName @shift.Assistant.LastName</td>
+                <td>@shift.Department.Name</td>
+                <td>@shift.ShiftDate.ToShortDateString()</td>
+                <td>@shift.StartTime</td>
+                <td>@shift.EndTime</td>
+            </tr>
+        }
+    </tbody>
+</table>

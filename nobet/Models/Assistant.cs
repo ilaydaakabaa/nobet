@@ -6,21 +6,22 @@ namespace emergencyProject.Models
     public class Assistant
     {
         [Key]
-        public int AssistantId { get; set; } // Birincil Anahtar (PK)
+        public int AssistantId { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string FirstName { get; set; } // İsim
+        public string FirstName { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string LastName { get; set; } // Soyisim
+        public string LastName { get; set; }
+        public int? UserId { get; set; }
 
-     
 
-        public ICollection<Appointment> Appointments { get; set; } // Randevular
-        public ICollection<Shift> Shifts { get; set; } // Nöbetler
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; } = null!;
 
-        public virtual ICollection<User> Users { get; set; } = new List<User>(); // İlişkili kullanıcılar
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public ICollection<Shift> Shifts { get; set; } = new List<Shift>();
     }
 }

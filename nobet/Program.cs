@@ -48,27 +48,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Kullanýcý oluþturma iþlemi
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    context.Database.Migrate(); // Veritabaný migrasyonlarýný uygula
-
-    // Admin kullanýcýsýný oluþturma
-    if (!context.Users.Any(u => u.Email == "admin@example.com"))
-    {
-        var adminUser = new User
-        {
-            Email = "admin@example.com",
-            Password = "admin123", // Þifreyi düz metin olarak sakla
-            Role = UserRole.Admin
-        };
-
-        context.Users.Add(adminUser);
-        await context.SaveChangesAsync(); // Deðiþiklikleri kaydet
-    }
-}
-
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
